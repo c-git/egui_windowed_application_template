@@ -39,8 +39,8 @@ jobs:
         # relatively as eframe_template/favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
         # will obviously return error 404 not found.
         run: |
-          export BASE_URL=$([ -n "${{ vars.PAGES_BASE_URL }}" ] && echo "${{ vars.PAGES_BASE_URL }}" || echo "https://${{ github.repository_owner }}.github.io/")
-          export PUBLIC_URL="$BASE_URL${{ github.event.repository.name }}/"
+          export BASE_URL=$([ -n "${{ vars.PAGES_BASE_URL }}" ] && echo "${{ vars.PAGES_BASE_URL }}" || echo "https://${{ github.repository_owner }}.github.io")
+          export PUBLIC_URL="$BASE_URL/${{ github.event.repository.name }}/"
           ./trunk build --release --public-url $PUBLIC_URL; echo "Public url is $PUBLIC_URL and base is $BASE_URL"
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
