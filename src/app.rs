@@ -1,4 +1,7 @@
+use std::hash::{Hash as _, Hasher as _};
+
 use egui_helpers::UiHelpers as _;
+use tracing::{debug, error, info};
 use wykies_time::Timestamp;
 
 use crate::{
@@ -17,6 +20,8 @@ pub struct TemplateApp {
     data_shared: DataShared,
     active_pages: Vec<UiPage>,
     shortcuts: Shortcuts,
+    #[serde(skip)]
+    last_save_hash: Option<u64>,
 }
 
 impl TemplateApp {
@@ -38,9 +43,15 @@ impl TemplateApp {
 }
 
 impl eframe::App for TemplateApp {
-    /// Called by the framework to save state before shutdown.
+    /// Called by the framework to save state before shutdown and periodically
+    /// as on web there is no shutdown notification
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        eframe::set_value(storage, eframe::APP_KEY, self);
+        if self.is_changed_since_last_save() {
+            info!("Saving with key: {}", eframe::APP_KEY);
+            eframe::set_value(storage, eframe::APP_KEY, self);
+        } else {
+            debug!("Not saving as no change has been detected");
+        }
     }
 
     /// Called each time the UI needs repainting, which may be many times per
@@ -117,7 +128,6 @@ impl TemplateApp {
         }
     }
 
-    #[cfg_attr(target_arch = "wasm32", allow(unused_variables))]
     fn ui_menu_file(&mut self, ui: &mut egui::Ui) {
         ui.menu_button("File", |ui| {
             self.ui_menu_page_btn::<pages::UiEguiSettings>(ui);
@@ -140,6 +150,26 @@ impl TemplateApp {
                 ui.send_viewport_cmd(egui::ViewportCommand::Close);
             }
         });
+    }
+
+    fn is_changed_since_last_save(&mut self) -> bool {
+        let as_ron = match ron::to_string(&self) {
+            Ok(s) => s,
+            Err(err_msg) => {
+                error!("{err_msg:?}");
+                return true;
+            }
+        };
+        let mut hasher = std::hash::DefaultHasher::new();
+        as_ron.hash(&mut hasher);
+        let new_hash = hasher.finish();
+        if let Some(&old_hash) = self.last_save_hash.as_ref()
+            && old_hash == new_hash
+        {
+            return false;
+        }
+        self.last_save_hash = Some(new_hash);
+        true
     }
 
     fn ui_active_pages_panel(&mut self, ui: &mut egui::Ui) {
@@ -241,6 +271,7 @@ impl Default for TemplateApp {
                 UiPage::new_page_with_unique_number::<UiAbout>(0),
             ],
             shortcuts: Default::default(),
+            last_save_hash: Default::default(),
         }
     }
 }
