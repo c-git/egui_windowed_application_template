@@ -22,7 +22,7 @@ jobs:
     needs: run_tests
     uses: ./.github/workflows/wasm.yml
   build-github-pages:
-    # needs: check_wasm
+    needs: check_wasm
     runs-on: ubuntu-latest
     steps:
       - uses: wykies/checkout@main
@@ -41,7 +41,7 @@ jobs:
         run: |
           export BASE_URL=$([ -n "${{ vars.PAGES_BASE_URL }}" ] && echo "${{ vars.PAGES_BASE_URL }}" || echo "https://${{ github.repository_owner }}.github.io")
           export PUBLIC_URL="$BASE_URL/${{ github.event.repository.name }}/"
-          ./trunk build --release --public-url $PUBLIC_URL; echo "Public url is $PUBLIC_URL and base is $BASE_URL"
+          ./trunk build --release --public-url $PUBLIC_URL; echo "Public url is $PUBLIC_URL"
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
