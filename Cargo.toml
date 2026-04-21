@@ -1,6 +1,16 @@
 [package]
-name = "egui_windowed_appliaction_template"
+name = "egui_windowed_application_template"
 version = "0.1.0"
+authors = ["One <one.bgz1@gmail.com>"]
+categories = []
+documentation = "" # Point to https://docs.rs/CRATE-NAME
 edition = "2024"
+keywords = []
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = ""
+description = ""
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
