@@ -25,6 +25,9 @@ serde = { version = "1.0.219", features = ["derive"] }
 wasm-bindgen-futures = "0.4.50"
 web-sys = "0.3.70" # to access the DOM (to hide the loading text)
 
+[dev-dependencies]
+wasm-bindgen-test = "0.3.68"
+
 [profile.release]
 opt-level = 2 # fast and small wasm
 

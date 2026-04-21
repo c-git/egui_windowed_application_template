@@ -10,5 +10,10 @@ mod used_in_main {
     use web_sys as _;
 }
 
+#[cfg(test)]
+mod dev_dependencies {
+    use wasm_bindgen_test as _;
+}
+
 mod app;
 pub use app::TemplateApp;
