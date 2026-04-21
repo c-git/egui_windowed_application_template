@@ -14,7 +14,7 @@ You may also provide default values via [many methods](https://cargo-generate.gi
 
 You can also add egui to your cargo generate config as a [favorite](https://cargo-generate.github.io/cargo-generate/favorites.html) to make the command you need to type shorter. For example you could add the following:
 
-```
+```toml
 # $CARGO_HOME/cargo-generate.toml eg. ~/.cargo/cargo-generate.toml
 [favorites.egui_windowed]
 git = "git@github.com:c-git/egui_windowed_application_template.git"
