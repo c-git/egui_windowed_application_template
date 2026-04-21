@@ -1,39 +1,28 @@
 # eframe template
 
-[![dependency status](https://deps.rs/repo/github/emilk/eframe_template/status.svg)](https://deps.rs/repo/github/emilk/eframe_template)
-[![Build Status](https://github.com/emilk/eframe_template/workflows/CI/badge.svg)](https://github.com/emilk/eframe_template/actions?workflow=CI)
+[![dependency status](https://deps.rs/repo/github/c-git/egui_windowed_application_template/status.svg)](https://deps.rs/repo/github/c-git/egui_windowed_application_template)
+[![Build Status](https://github.com/c-git/egui_windowed_application_template/workflows/CI/badge.svg)](https://github.com/c-git/egui_windowed_application_template/actions?workflow=CI)
 
-This is a template repo for [eframe](https://github.com/emilk/egui/tree/master/crates/eframe), a framework for writing apps using [egui](https://github.com/emilk/egui/).
-
-The goal is for this to be the simplest way to get started writing a GUI app in Rust.
-
-You can compile your app natively or for the web, and share it using Github Pages.
+This repo is derived from https://github.com/emilk/eframe_template/ so see the readme there for more info that may be relevant to you but has been removed here for brevity and focus.
 
 ## Getting started
 
-Start by clicking "Use this template" at https://github.com/emilk/eframe_template/ or follow [these instructions](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
+You first need to install `cargo generate` this can be done using the command `cargo install cargo-generate` or see the [docs](https://cargo-generate.github.io/cargo-generate/installation.html) for more info.
 
-Change the name of the crate: Choose a good name for your project, and change the name to it in:
+Then run the following command and fill in the values to generate a new project `cargo generate c-git/egui_windowed_application_template --branch cargo-gen`.
+You may also provide default values via [many methods](https://cargo-generate.github.io/cargo-generate/templates/template_defined_placeholders.html#default-values-for-placeholders). For the list of placeholder names see (cargo-generate.toml)
 
-- `Cargo.toml`
-  - Change the `package.name` from `eframe_template` to `your_crate`.
-  - Change the `package.authors`
-- `main.rs`
-  - Change `eframe_template::TemplateApp` to `your_crate::TemplateApp`
-- `index.html`
-  - Change the `<title>eframe template</title>` to `<title>your_crate</title>`. optional.
-- `assets/sw.js`
-  - Change the `'./eframe_template.js'` to `./your_crate.js` (in `filesToCache` array)
-  - Change the `'./eframe_template_bg.wasm'` to `./your_crate_bg.wasm` (in `filesToCache` array)
+You can also add egui to your cargo generate config as a [favorite](https://cargo-generate.github.io/cargo-generate/favorites.html) to make the command you need to type shorter. For example you could add the following:
 
-Alternatively, you can run `fill_template.sh` which will ask for the needed names and email and perform the above patches for you. This is particularly useful if you clone this repository outside GitHub and hence cannot make use of its
-templating function.
+```
+# $CARGO_HOME/cargo-generate.toml eg. ~/.cargo/cargo-generate.toml
+[favorites.egui_windowed]
+git = "git@github.com:c-git/egui_windowed_application_template.git"
+branch = "cargo-gen"
+description = "Sets up a new egui windowed project"
+```
 
-### Learning about egui
-
-`src/app.rs` contains a simple example app. This is just to give some inspiration - most of it can be removed if you like.
-
-The official egui docs are at <https://docs.rs/egui>. If you prefer watching a video introduction, check out <https://www.youtube.com/watch?v=NtUkr_z7l84>. For inspiration, check out the [the egui web demo](https://emilk.github.io/egui/index.html) and follow the links in it to its source code.
+Then you can use the shorter command `cargo generate egui_windowed`.
 
 ### Testing locally
 
@@ -73,7 +62,7 @@ We use [Trunk](https://trunkrs.dev/) to build for web target.
 > If `gh-pages` is not available in `Source`, just create and push a branch called `gh-pages` and it should be available.
 >
 > If you renamed the `main` branch to something else (say you re-initialized the repository with `master` as the initial branch), be sure to edit the github workflows `.github/workflows/pages.yml` file to reflect the change
->
+
 > ```yml
 > on:
 >   push:
@@ -81,10 +70,22 @@ We use [Trunk](https://trunkrs.dev/) to build for web target.
 >       - <branch name>
 > ```
 
-You can test the template app at <https://emilk.github.io/eframe_template/>.
+You can test the template app at <https://c-git.github.io/egui_windowed_application_template/>.
 
-## Updating egui
+## License
 
-As of 2023, egui is in active development with frequent releases with breaking changes. [eframe_template](https://github.com/emilk/eframe_template/) will be updated in lock-step to always use the latest version of egui.
+All code in this repository is dual-licensed under either:
 
-When updating `egui` and `eframe` it is recommended you do so one version at the time, and read about the changes in [the egui changelog](https://github.com/emilk/egui/blob/master/CHANGELOG.md) and [eframe changelog](https://github.com/emilk/egui/blob/master/crates/eframe/CHANGELOG.md).
+- Apache License, Version 2.0
+- MIT license
+
+at your option.
+This means you can select the license you prefer!
+This dual-licensing approach is the de-facto standard in the Rust ecosystem and there are very good reasons to include both as noted in
+this [issue](https://github.com/bevyengine/bevy/issues/2373) on [Bevy](https://bevyengine.org)'s repo.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be dual licensed as above, without any additional terms or conditions.
