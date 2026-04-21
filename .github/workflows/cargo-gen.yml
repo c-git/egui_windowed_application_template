@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: write # for committing to cargo-gen branch.
-  actions: write # to update the github pages job because of redirect
 
 jobs:
   create-cargo-generate-template:
