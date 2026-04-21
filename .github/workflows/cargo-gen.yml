@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write # for committing to cargo-gen branch.
+  workflows: write
 
 jobs:
   create-cargo-generate-template:
