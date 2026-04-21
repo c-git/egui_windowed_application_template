@@ -1,7 +1,7 @@
 # eframe template
 
 [![dependency status](https://deps.rs/repo/github/c-git/egui_windowed_application_template/status.svg)](https://deps.rs/repo/github/c-git/egui_windowed_application_template)
-[![Build Status](https://github.com/c-git/egui_windowed_application_template/workflows/CI/badge.svg)](https://github.com/c-git/egui_windowed_application_template/actions?workflow=CI)
+[![Build Status](https://github.com/c-git/egui_windowed_application_template/workflows/CI/badge.svg)](https://github.com/c-git/egui_windowed_application_template/actions)
 
 This repo is derived from https://github.com/emilk/eframe_template/ so see the readme there for more info that may be relevant to you but has been removed here for brevity and focus.
 
