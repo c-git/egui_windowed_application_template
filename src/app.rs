@@ -1,27 +1,27 @@
-use std::sync::LazyLock;
+use egui_helpers::UiHelpers as _;
+use wykies_time::Timestamp;
+
+use crate::{
+    DataShared, DisplayablePage, UiPage,
+    pages::{self, UiAbout, UiSample},
+    shortcuts::Shortcuts,
+};
+
+const VERSION_STR: &str = concat!("ver: ", env!("CARGO_PKG_VERSION"));
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TemplateApp {
-    // Example stuff:
-    label: String,
-
-    #[serde(skip)] // This how you opt-out of serialization of a field
-    value: f32,
-}
-
-impl Default for TemplateApp {
-    fn default() -> Self {
-        Self {
-            // Example stuff:
-            label: "Hello World!".to_owned(),
-            value: 2.7,
-        }
-    }
+    #[serde(skip)]
+    data_shared: DataShared,
+    active_pages: Vec<UiPage>,
+    shortcuts: Shortcuts,
 }
 
 impl TemplateApp {
+    pub const VISUALS_KEY: &str = "visuals";
+
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // This is also where you can customize the look and feel of egui using
@@ -48,67 +48,199 @@ impl eframe::App for TemplateApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`,
         // `Window` or `Area`. For inspiration and more examples, go to https://emilk.github.io/egui
+        // For a simpler example see https://github.com/emilk/eframe_template which this template expands on
 
+        self.top_panel(ui);
+        Self::bottom_panel(ui);
+        self.show_pages(ui);
+
+        // Request repaint after 1 second
+        ui.request_repaint_after(std::time::Duration::from_secs(1));
+    }
+}
+
+impl TemplateApp {
+    fn top_panel(&mut self, ui: &mut egui::Ui) {
         egui::Panel::top("top_panel").show_inside(ui, |ui| {
             // The top panel is often a good place for a menu bar:
 
             egui::MenuBar::new().ui(ui, |ui| {
-                // NOTE: no File->Quit on web pages!
-                let is_web = cfg!(target_arch = "wasm32");
-                if !is_web {
-                    ui.menu_button("File", |ui| {
-                        if ui.button("Quit").clicked() {
-                            ui.send_viewport_cmd(egui::ViewportCommand::Close);
-                        }
-                    });
-                    ui.add_space(16.0);
-                }
+                self.ui_menu_file(ui);
+                self.ui_menu_pages(ui);
 
+                ui.add_space(16.0);
                 egui::widgets::global_theme_preference_buttons(ui);
+
+                ui.add_space(16.0);
+                ui.label(VERSION_STR);
             });
         });
+    }
 
-        egui::CentralPanel::default().show_inside(ui, |ui| {
-            // The central panel the region left after adding TopPanel's and SidePanel's
-            static HEADING: LazyLock<&'static str> =
-                LazyLock::new(|| format!("eframe template {}", env!("CARGO_PKG_VERSION")).leak());
-            ui.heading(*HEADING);
-
-            ui.horizontal(|ui| {
-                ui.label("Write something: ");
-                ui.text_edit_singleline(&mut self.label);
-            });
-
-            ui.add(egui::Slider::new(&mut self.value, 0.0..=10.0).text("value"));
-            if ui.button("Increment").clicked() {
-                self.value += 1.0;
-            }
-
-            ui.separator();
-
-            ui.add(egui::github_link_file!(
-                "https://github.com/emilk/eframe_template/blob/main/",
-                "Source code."
-            ));
-
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                powered_by_egui_and_eframe(ui);
+    fn bottom_panel(ui: &mut egui::Ui) {
+        egui::Panel::bottom("bottom_panel").show_inside(ui, |ui| {
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::BOTTOM), |ui| {
+                ui.label(Self::current_time());
                 egui::warn_if_debug_build(ui);
             });
         });
     }
+
+    fn show_pages(&mut self, ui: &mut egui::Ui) {
+        self.ui_active_pages_panel(ui);
+        for page in &mut self.active_pages {
+            page.display_page(ui, &mut self.data_shared);
+        }
+    }
+
+    fn current_time() -> String {
+        Timestamp::now().display_as_utc_datetime_long()
+    }
+
+    fn ui_menu_page_btn<T: DisplayablePage>(&mut self, ui: &mut egui::Ui) {
+        let base_title = T::title_base();
+        if ui.button(base_title).clicked() {
+            let mut max_id_found = None;
+            for page in &mut self.active_pages {
+                if page.title_base() == base_title {
+                    max_id_found = max_id_found.max(Some(page.page_unique_number()));
+                }
+            }
+            let new_num = if let Some(val) = max_id_found {
+                val + 1
+            } else {
+                0
+            };
+            self.active_pages
+                .push(UiPage::new_page_with_unique_number::<T>(new_num));
+            ui.close();
+        }
+    }
+
+    #[cfg_attr(target_arch = "wasm32", allow(unused_variables))]
+    fn ui_menu_file(&mut self, ui: &mut egui::Ui) {
+        ui.menu_button("File", |ui| {
+            self.ui_menu_page_btn::<pages::UiEguiSettings>(ui);
+
+            // On the web the browser controls the zoom
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                ui.separator();
+                egui::gui_zoom::zoom_menu_buttons(ui);
+                ui.weak(format!("Current zoom: {:.0}%", 100.0 * ui.zoom_factor()))
+                    .on_hover_text(
+                        "The UI zoom level, on top of the operating system's default value",
+                    );
+                ui.separator();
+            }
+            self.ui_menu_page_btn::<pages::UiAbout>(ui);
+
+            #[cfg(not(target_arch = "wasm32"))] // no File->Quit on web pages!
+            if ui.button("Quit").clicked() {
+                ui.send_viewport_cmd(egui::ViewportCommand::Close);
+            }
+        });
+    }
+
+    fn ui_active_pages_panel(&mut self, ui: &mut egui::Ui) {
+        egui::Panel::right("side_panel")
+            .resizable(false)
+            .default_size(200.0)
+            .show_inside(ui, |ui| {
+                self.process_shortcuts(ui);
+
+                ui.vertical_centered(|ui| {
+                    ui.heading("Active Pages");
+                });
+
+                ui.separator();
+
+                self.ui_pages_list(ui);
+            });
+    }
+
+    fn ui_pages_list(&mut self, ui: &mut egui::Ui) {
+        egui::ScrollArea::vertical().show(ui, |ui| {
+            ui.with_layout(egui::Layout::top_down_justified(egui::Align::LEFT), |ui| {
+                ui.removable_items_list(
+                    Some(&mut self.active_pages),
+                    "NO PAGES ARE ACTIVE.\nUse top menu to activate a page",
+                );
+
+                ui.separator();
+
+                if ui.button("Open All Pages").clicked() {
+                    self.open_all_pages();
+                }
+                if ui.button("Close All Pages").clicked() {
+                    self.close_all_pages();
+                }
+                if ui.button("Deactivate All Pages").clicked() {
+                    self.deactivate_all_pages();
+                }
+                if ui.button("Sort Pages by Name").clicked() {
+                    self.sort_pages_by_name();
+                }
+                if ui
+                    .add(
+                        egui::Button::new("Organize Pages")
+                            .shortcut_text(ui.format_shortcut(&self.shortcuts.organize_pages)),
+                    )
+                    .clicked()
+                {
+                    do_organize_pages(ui);
+                }
+            });
+        });
+    }
+
+    fn deactivate_all_pages(&mut self) {
+        self.active_pages.clear();
+    }
+
+    fn close_all_pages(&mut self) {
+        self.active_pages
+            .iter_mut()
+            .for_each(|page| page.close_page());
+    }
+
+    fn open_all_pages(&mut self) {
+        self.active_pages
+            .iter_mut()
+            .for_each(|page| page.open_page());
+    }
+
+    fn sort_pages_by_name(&mut self) {
+        self.active_pages.sort_by_key(|x| x.title());
+    }
+
+    fn process_shortcuts(&self, ui: &egui::Ui) {
+        if ui.input_mut(|i| i.consume_shortcut(&self.shortcuts.organize_pages)) {
+            do_organize_pages(ui);
+        }
+    }
+
+    fn ui_menu_pages(&mut self, ui: &mut egui::Ui) {
+        ui.menu_button("Pages", |ui| {
+            self.ui_menu_page_btn::<pages::UiSample>(ui);
+        });
+    }
 }
 
-fn powered_by_egui_and_eframe(ui: &mut egui::Ui) {
-    ui.horizontal(|ui| {
-        ui.spacing_mut().item_spacing.x = 0.0;
-        ui.label("Powered by ");
-        ui.hyperlink_to("egui", "https://github.com/emilk/egui");
-        ui.label(" and ");
-        ui.hyperlink_to(
-            "eframe",
-            "https://github.com/emilk/egui/tree/master/crates/eframe",
-        );
-        ui.label(".");
-    });
+fn do_organize_pages(ui: &egui::Ui) {
+    ui.memory_mut(|mem| mem.reset_areas());
+}
+
+impl Default for TemplateApp {
+    fn default() -> Self {
+        // Preload `active_pages` with a few pages for first open
+        Self {
+            data_shared: Default::default(),
+            active_pages: vec![
+                UiPage::new_page_with_unique_number::<UiSample>(0),
+                UiPage::new_page_with_unique_number::<UiAbout>(0),
+            ],
+            shortcuts: Default::default(),
+        }
+    }
 }

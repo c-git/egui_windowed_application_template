@@ -18,9 +18,10 @@ mod dev_dependencies {
 }
 
 mod app;
-pub use app::TemplateApp;
+mod data;
+mod pages;
+mod shortcuts;
 pub mod tracing;
-
-// mod pages;
-// mod shortcuts;
-// pub use pages::{DisplayablePage, pages::UiPage};
+pub use app::TemplateApp;
+pub use data::DataShared;
+pub use pages::{DisplayablePage, UiPage};
