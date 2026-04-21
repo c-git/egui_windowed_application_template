@@ -19,7 +19,6 @@ tracing = "0.1.41"
 
 # You only need serde if you want app persistence:
 egui-helpers = { git = "https://github.com/wykies/crates", version = "0.2.0" }
-reqwest-cross = { version = "0.10.0", features = ["egui"] }
 ron = "0.12.1"
 serde = { version = "1.0.219", features = ["derive"] }
 strum = { version = "0.28.0", features = ["derive"] }

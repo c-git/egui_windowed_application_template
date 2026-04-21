@@ -4,10 +4,7 @@ use tracing::{error, info};
 pub use self::{about::UiAbout, egui_settings::UiEguiSettings, sample::UiSample};
 use crate::DataShared;
 mod about;
-#[expect(unused)] // TODO 3: Remove the pieces we didn't use
-mod await_server_completion;
 mod egui_settings;
-mod error_helpers;
 mod macros;
 pub mod sample;
 
