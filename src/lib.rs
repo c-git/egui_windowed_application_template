@@ -7,7 +7,6 @@
 #[cfg(target_arch = "wasm32")]
 mod suppress_wasm_warnings {
     // Only used in binary and triggers unused warning
-    use anyhow as _; // TODO: Remove in production app, not needed in template
     use wasm_bindgen_futures as _;
     use web_sys as _;
 }
