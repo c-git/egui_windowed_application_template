@@ -10,7 +10,8 @@ use tracing_subscriber::{EnvFilter, Registry, fmt::MakeWriter, layer::Subscriber
 /// Returns a guard for the subscriber if successful
 ///
 /// # Errors
-/// May fail for various reasons like invalid path to save to or not able to setup the writer
+/// May fail for various reasons like invalid path to save to or not able to
+/// setup the writer
 pub fn init_native() -> anyhow::Result<tracing_appender::non_blocking::WorkerGuard> {
     let (writer, path, guard) = setup_tracing_writer("egui-template-pwa")?;
     let subscriber = get_subscriber("egui-template-pwa".into(), "zbus=warn,info", writer);
