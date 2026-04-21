@@ -41,7 +41,7 @@ jobs:
         run: ./trunk build --release --public-url $public_url
         env:
           base_url: ${{ vars.PAGES_BASE_URL || format('https://{0}.github.io/', github.repository_owner) }}
-          public_url: "$BASE_URL${{ github.event.repository.name }}/" # Needed two steps because of custom domain on my github account
+          public_url: "${{  env.BASE_URL }}${{ github.event.repository.name }}/" # Needed two steps because of custom domain on my github account
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
