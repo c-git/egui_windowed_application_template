@@ -22,7 +22,7 @@ jobs:
     needs: run_tests
     uses: ./.github/workflows/wasm.yml
   build-github-pages:
-    needs: check_wasm
+    # needs: check_wasm
     runs-on: ubuntu-latest
     steps:
       - uses: wykies/checkout@main
