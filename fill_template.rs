@@ -21,7 +21,7 @@ pub fn main() -> anyhow::Result<()> {
         "{{ authors }}",
     )?;
     do_switch(
-        &["src/main.rs", "src/app.rs", "index.html"],
+        &["src/main.rs", "src/app.rs", "index.html", "README.md"],
         "eframe template",
         "{{ crate_display_name }}",
     )?;
@@ -47,23 +47,13 @@ pub fn main() -> anyhow::Result<()> {
     )?;
     do_switch(
         &["README.md"],
-        "# eframe template",
-        "# {{ crate_display_name }}",
+        "c-git/egui_windowed_application_template/",
+        "{{ github_repository_owner_and_name }}/",
     )?;
     do_switch(
         &["README.md"],
-        "repo/github/emilk/eframe_template",
-        "repo/github/{{ github_repository_owner_and_name }}",
-    )?;
-    do_switch(
-        &["README.md"],
-        "emilk/eframe_template/workflows",
-        "{{ github_repository_owner_and_name }}/workflows",
-    )?;
-    do_switch(
-        &["README.md"],
-        "emilk/eframe_template/actions",
-        "{{ github_repository_owner_and_name }}/actions",
+        "c-git/egui_windowed_application_template)",
+        "{{ github_repository_owner_and_name }})",
     )?;
     println!("Completed");
     Ok(())
