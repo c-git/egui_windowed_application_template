@@ -1,10 +1,7 @@
-use anyhow::{Context as _, bail};
-use std::{fs::create_dir_all, path::PathBuf};
-use tracing::{Subscriber, subscriber::set_global_default};
-use tracing_appender::non_blocking::{NonBlocking, WorkerGuard};
-use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
-use tracing_log::LogTracer;
-use tracing_subscriber::{EnvFilter, Registry, fmt::MakeWriter, layer::SubscriberExt as _};
+#[cfg(not(target_arch = "wasm32"))]
+use anyhow::Context as _;
+#[cfg(not(target_arch = "wasm32"))]
+use tracing_subscriber::layer::SubscriberExt as _;
 
 #[cfg(not(target_arch = "wasm32"))]
 /// Returns a guard for the subscriber if successful
@@ -28,7 +25,7 @@ pub fn init_native() -> anyhow::Result<tracing_appender::non_blocking::WorkerGua
             Ok(guard)
         }
         Err(e) => {
-            bail!("Failed to start tracing to file. Error: {e}");
+            anyhow::bail!("Failed to start tracing to file. Error: {e}");
         }
     }
 }
@@ -46,6 +43,7 @@ pub fn init_wasm() {
     tracing_wasm::set_as_global_default_with_config(config);
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 /// Compose multiple layers into a `tracing`'s subscriber.
 ///
 /// For details acceptable Filter Directives see <https://docs.rs/tracing-subscriber/0.3.19/tracing_subscriber/filter/struct.EnvFilter.html#directives>
@@ -58,34 +56,44 @@ fn get_subscriber<Sink, S>(
     name: String,
     default_env_filter_directive: S,
     sink: Sink,
-) -> impl Subscriber + Sync + Send
+) -> impl tracing::Subscriber + Sync + Send
 where
-    Sink: for<'a> MakeWriter<'a> + Send + Sync + 'static,
+    Sink: for<'a> tracing_subscriber::fmt::MakeWriter<'a> + Send + Sync + 'static,
     S: AsRef<str>,
 {
-    let env_filter = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| EnvFilter::new(default_env_filter_directive));
-    let formatting_layer = BunyanFormattingLayer::new(name, sink);
-    Registry::default()
+    let env_filter = tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(default_env_filter_directive));
+    let formatting_layer = tracing_bunyan_formatter::BunyanFormattingLayer::new(name, sink);
+    tracing_subscriber::Registry::default()
         .with(env_filter)
-        .with(JsonStorageLayer)
+        .with(tracing_bunyan_formatter::JsonStorageLayer)
         .with(formatting_layer)
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 /// Register a subscriber as global default to process span data.
 ///
 /// It should only be called once!
-fn init_subscriber(subscriber: impl Subscriber + Sync + Send) -> anyhow::Result<()> {
-    LogTracer::init().context("Failed to set logger")?;
-    set_global_default(subscriber).context("Failed to set subscriber")?;
+fn init_subscriber(subscriber: impl tracing::Subscriber + Sync + Send) -> anyhow::Result<()> {
+    use anyhow::Context as _;
+
+    tracing_log::LogTracer::init().context("Failed to set logger")?;
+    tracing::subscriber::set_global_default(subscriber).context("Failed to set subscriber")?;
     Ok(())
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 /// Returns a handle to the file created and the file path
-fn setup_tracing_writer(app_name: &str) -> anyhow::Result<(NonBlocking, PathBuf, WorkerGuard)> {
+fn setup_tracing_writer(
+    app_name: &str,
+) -> anyhow::Result<(
+    tracing_appender::non_blocking::NonBlocking,
+    std::path::PathBuf,
+    tracing_appender::non_blocking::WorkerGuard,
+)> {
     // Create logging folder
-    let log_folder = PathBuf::from("traces").join(app_name);
-    create_dir_all(&log_folder).context("Failed to create logging folder")?;
+    let log_folder = std::path::PathBuf::from("traces").join(app_name);
+    std::fs::create_dir_all(&log_folder).context("Failed to create logging folder")?;
 
     // Start non blocking logger wrapping a rolling logger
     let file_appender = tracing_appender::rolling::hourly(&log_folder, app_name);
