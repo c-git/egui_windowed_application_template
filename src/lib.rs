@@ -20,3 +20,7 @@ mod dev_dependencies {
 mod app;
 pub use app::TemplateApp;
 pub mod tracing;
+
+// mod pages;
+// mod shortcuts;
+// pub use pages::{DisplayablePage, pages::UiPage};

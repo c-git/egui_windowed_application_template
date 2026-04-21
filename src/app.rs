@@ -1,3 +1,5 @@
+use std::sync::LazyLock;
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -68,7 +70,9 @@ impl eframe::App for TemplateApp {
 
         egui::CentralPanel::default().show_inside(ui, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
-            ui.heading("eframe template");
+            static HEADING: LazyLock<&'static str> =
+                LazyLock::new(|| format!("eframe template {}", env!("CARGO_PKG_VERSION")).leak());
+            ui.heading(*HEADING);
 
             ui.horizontal(|ui| {
                 ui.label("Write something: ");
