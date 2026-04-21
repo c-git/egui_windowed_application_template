@@ -5,7 +5,8 @@
 #![warn(clippy::all, rust_2018_idioms)]
 
 #[cfg(target_arch = "wasm32")]
-mod used_in_main {
+mod suppress_wasm_warnings {
+    // Only used in binary and triggers unused warning
     use wasm_bindgen_futures as _;
     use web_sys as _;
 }
@@ -17,3 +18,4 @@ mod dev_dependencies {
 
 mod app;
 pub use app::TemplateApp;
+pub mod tracing;

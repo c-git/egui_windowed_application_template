@@ -31,7 +31,7 @@ pub fn main() -> anyhow::Result<()> {
         "{{ pwa_short_name }}",
     )?;
     do_switch(
-        &["assets/manifest.json"],
+        &["assets/manifest.json", "src/tracing.rs"],
         "egui-template-pwa",
         "{{ pwa_short_name }}",
     )?;

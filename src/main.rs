@@ -3,13 +3,21 @@
 
 // When compiling natively:
 #[cfg(not(target_arch = "wasm32"))]
-fn main() -> eframe::Result {
+fn main() -> eframe::Result<()> {
+    #[expect(clippy::print_stderr)]
+    let _guard = match eframe_template::tracing::init_native() {
+        Ok(guard) => guard,
+        Err(err_msg) => {
+            eprintln!("Failed to start tracing: {err_msg:?}");
+            std::process::exit(84);
+        }
+    };
+
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([400.0, 300.0])
             .with_min_inner_size([300.0, 220.0])
             .with_icon(
-                // NOTE: Adding an icon is optional
                 eframe::icon_data::from_png_bytes(
                     &include_bytes!("../assets/favicon-512x512.png")[..],
                 )
@@ -24,21 +32,19 @@ fn main() -> eframe::Result {
     )
 }
 
-// When compiling to web using trunk:
+// When compiling to web using trunk
 #[cfg(target_arch = "wasm32")]
 fn main() {
     use eframe::wasm_bindgen::JsCast as _;
-
-    // Redirect `log` message to `console.log` and friends:
-    // eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+    eframe_template::tracing::init_wasm();
 
     let web_options = eframe::WebOptions::default();
 
     wasm_bindgen_futures::spawn_local(async {
         let document = web_sys::window()
-            .expect("No window")
+            .expect("No window found")
             .document()
-            .expect("No document");
+            .expect("No document found (No DOM)");
 
         let canvas = document
             .get_element_by_id("the_canvas_id")
