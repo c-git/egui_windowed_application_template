@@ -38,7 +38,7 @@ jobs:
         # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
         # relatively as eframe_template/favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
         # will obviously return error 404 not found.
-        run: ./trunk build --release --public-url $public_url; echo $public_url
+        run: ./trunk build --release --public-url $public_url; echo "Public url is $public_url and base is base_url"
         env:
           base_url: ${{ vars.PAGES_BASE_URL || format('https://{0}.github.io/', github.repository_owner) }}
           public_url: "${{  env.BASE_URL }}${{ github.event.repository.name }}/" # Needed two steps because of custom domain on my github account
