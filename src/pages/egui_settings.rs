@@ -1,6 +1,6 @@
-use super::DisplayablePage;
-use crate::{DataShared, TemplateApp, displayable_page_common};
+use crate::{DataShared, Permission, TemplateApp, pages::private};
 use egui::Ui;
+use egui_pages::{DisplayablePage, displayable_page_common};
 use tracing::info;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, Default)]
@@ -21,8 +21,8 @@ impl UiEguiSettings {
     }
 }
 
-impl DisplayablePage for UiEguiSettings {
-    displayable_page_common!("UI Settings");
+impl DisplayablePage<DataShared, Permission, private::Token> for UiEguiSettings {
+    displayable_page_common!("UI Settings", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, _data_shared: &mut DataShared) {
         let ctx = ui.ctx().clone();

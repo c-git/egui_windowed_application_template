@@ -1,14 +1,12 @@
-use std::hash::{Hash as _, Hasher as _};
-
-use egui_helpers::UiHelpers as _;
-use tracing::{debug, error, info};
-use wykies_time::Timestamp;
-
 use crate::{
-    DataShared, DisplayablePage, UiPage,
+    DataShared, UiPage,
     pages::{self, UiAbout, UiSample},
     shortcuts::Shortcuts,
 };
+use egui_pages::PageContainer as _;
+use std::hash::{Hash as _, Hasher as _};
+use tracing::{debug, error, info};
+use wykies_time::Timestamp;
 
 const VERSION_STR: &str = concat!("ver: ", env!("CARGO_PKG_VERSION"));
 
@@ -98,39 +96,21 @@ impl TemplateApp {
     }
 
     fn show_pages(&mut self, ui: &mut egui::Ui) {
-        self.ui_active_pages_panel(ui);
-        for page in &mut self.active_pages {
-            page.display_page(ui, &mut self.data_shared);
-        }
+        UiPage::ui_active_pages_panel(ui, &mut self.active_pages, &self.shortcuts.organize_pages);
+        UiPage::ui_display_pages(ui, &mut self.active_pages, &mut self.data_shared);
     }
 
     fn current_time() -> String {
         Timestamp::now().display_as_utc_datetime_long()
     }
 
-    fn ui_menu_page_btn<T: DisplayablePage>(&mut self, ui: &mut egui::Ui) {
-        let base_title = T::title_base();
-        if ui.button(base_title).clicked() {
-            let mut max_id_found = None;
-            for page in &mut self.active_pages {
-                if page.title_base() == base_title {
-                    max_id_found = max_id_found.max(Some(page.page_unique_number()));
-                }
-            }
-            let new_num = if let Some(val) = max_id_found {
-                val + 1
-            } else {
-                0
-            };
-            self.active_pages
-                .push(UiPage::new_page_with_unique_number::<T>(new_num));
-            ui.close();
-        }
-    }
-
     fn ui_menu_file(&mut self, ui: &mut egui::Ui) {
         ui.menu_button("File", |ui| {
-            self.ui_menu_page_btn::<pages::UiEguiSettings>(ui);
+            UiPage::ui_menu_page_btn::<pages::UiEguiSettings>(
+                ui,
+                &self.data_shared,
+                &mut self.active_pages,
+            );
 
             // On the web the browser controls the zoom
             #[cfg(not(target_arch = "wasm32"))]
@@ -143,7 +123,7 @@ impl TemplateApp {
                     );
                 ui.separator();
             }
-            self.ui_menu_page_btn::<pages::UiAbout>(ui);
+            UiPage::ui_menu_page_btn::<UiAbout>(ui, &self.data_shared, &mut self.active_pages);
 
             #[cfg(not(target_arch = "wasm32"))] // no File->Quit on web pages!
             if ui.button("Quit").clicked() {
@@ -172,93 +152,15 @@ impl TemplateApp {
         true
     }
 
-    fn ui_active_pages_panel(&mut self, ui: &mut egui::Ui) {
-        egui::Panel::right("side_panel")
-            .resizable(false)
-            .default_size(200.0)
-            .show_inside(ui, |ui| {
-                self.process_shortcuts(ui);
-
-                ui.vertical_centered(|ui| {
-                    ui.heading("Active Pages");
-                });
-
-                ui.separator();
-
-                self.ui_pages_list(ui);
-            });
-    }
-
-    fn ui_pages_list(&mut self, ui: &mut egui::Ui) {
-        egui::ScrollArea::vertical().show(ui, |ui| {
-            ui.with_layout(egui::Layout::top_down_justified(egui::Align::LEFT), |ui| {
-                ui.removable_items_list(
-                    Some(&mut self.active_pages),
-                    "NO PAGES ARE ACTIVE.\nUse top menu to activate a page",
-                );
-
-                ui.separator();
-
-                if ui.button("Open All Pages").clicked() {
-                    self.open_all_pages();
-                }
-                if ui.button("Close All Pages").clicked() {
-                    self.close_all_pages();
-                }
-                if ui.button("Deactivate All Pages").clicked() {
-                    self.deactivate_all_pages();
-                }
-                if ui.button("Sort Pages by Name").clicked() {
-                    self.sort_pages_by_name();
-                }
-                if ui
-                    .add(
-                        egui::Button::new("Organize Pages")
-                            .shortcut_text(ui.format_shortcut(&self.shortcuts.organize_pages)),
-                    )
-                    .clicked()
-                {
-                    do_organize_pages(ui);
-                }
-            });
-        });
-    }
-
-    fn deactivate_all_pages(&mut self) {
-        self.active_pages.clear();
-    }
-
-    fn close_all_pages(&mut self) {
-        self.active_pages
-            .iter_mut()
-            .for_each(|page| page.close_page());
-    }
-
-    fn open_all_pages(&mut self) {
-        self.active_pages
-            .iter_mut()
-            .for_each(|page| page.open_page());
-    }
-
-    fn sort_pages_by_name(&mut self) {
-        self.active_pages.sort_by_key(|x| x.title());
-    }
-
-    fn process_shortcuts(&self, ui: &egui::Ui) {
-        if ui.input_mut(|i| i.consume_shortcut(&self.shortcuts.organize_pages)) {
-            do_organize_pages(ui);
-        }
-    }
-
     fn ui_menu_pages(&mut self, ui: &mut egui::Ui) {
         ui.menu_button("Pages", |ui| {
-            self.ui_menu_page_btn::<pages::UiSample>(ui);
+            UiPage::ui_menu_page_btn::<pages::UiSample>(
+                ui,
+                &self.data_shared,
+                &mut self.active_pages,
+            );
         });
     }
-}
-
-fn do_organize_pages(ui: &egui::Ui) {
-    ui.memory_mut(|mem| mem.reset_areas());
 }
 
 impl Default for TemplateApp {

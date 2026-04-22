@@ -23,4 +23,14 @@ mod shortcuts;
 pub mod tracing;
 pub use app::TemplateApp;
 pub use data::DataShared;
-pub use pages::{DisplayablePage, UiPage};
+pub use pages::UiPage;
+
+/// Placeholder type for if your application needs permissions. I normally model
+/// them as an enum and then have vectors or arrays to store lists of them
+/// needed for various parts of the application. That said they more serve to
+/// provide a good UI by not showing buttons that won't work on the client but
+/// all actual validation of privileges is done on the server in all of my
+/// applications. For an example where I actually used permissions you can look
+/// at a chat app that I did at
+/// <https://github.com/wykies/crates/tree/develop/crates/chat-app-client>
+struct Permission;

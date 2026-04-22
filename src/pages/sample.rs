@@ -1,8 +1,8 @@
 /// TODO: Review this page and use as an example.
 /// It recreates the starting page in the original template
-use super::DisplayablePage;
-use crate::{DataShared, displayable_page_common};
+use crate::{DataShared, Permission, pages::private};
 use egui::Ui;
+use egui_pages::{DisplayablePage, displayable_page_common};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 #[serde(default)]
@@ -30,8 +30,8 @@ impl Default for UiSample {
     }
 }
 
-impl DisplayablePage for UiSample {
-    displayable_page_common!("UI Sample");
+impl DisplayablePage<DataShared, Permission, private::Token> for UiSample {
+    displayable_page_common!("UI Sample", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, _data_shared: &mut DataShared) {
         // You are fine to use panels in here if you want but as the ui is already in

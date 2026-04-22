@@ -1,6 +1,6 @@
-use super::DisplayablePage;
-use crate::{DataShared, displayable_page_common};
+use crate::{DataShared, Permission, pages::private};
 use egui::Ui;
+use egui_pages::{DisplayablePage, displayable_page_common};
 
 const AUTHORS: &str = env!("CARGO_PKG_AUTHORS");
 const NAME: &str = env!("CARGO_PKG_NAME");
@@ -14,8 +14,8 @@ pub struct UiAbout {
     page_unique_number: usize,
 }
 
-impl DisplayablePage for UiAbout {
-    displayable_page_common!("About");
+impl DisplayablePage<DataShared, Permission, private::Token> for UiAbout {
+    displayable_page_common!("About", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, _data_shared: &mut DataShared) {
         egui::Grid::new(self.unique_prefix_for_id(&self.unique_prefix_for_id("grid")))
