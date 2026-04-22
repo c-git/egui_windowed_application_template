@@ -17,6 +17,7 @@ mod dev_dependencies {
 }
 
 mod app;
+mod consts;
 mod data_shared;
 mod pages;
 mod shortcuts;

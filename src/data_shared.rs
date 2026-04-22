@@ -1,10 +1,9 @@
-use crate::Permission;
+use crate::{
+    Permission,
+    consts::{CLIENT_IDLE_TIMEOUT, CLIENT_TICKS_PER_SECOND_FOR_ACTIVE},
+};
 use egui_helpers::ScreenLockInfo;
 use egui_pages::PermissionValidator;
-use wykies_time::Seconds;
-
-const CLIENT_IDLE_TIMEOUT: Seconds = Seconds::new(30);
-const CLIENT_TICKS_PER_SECOND_FOR_ACTIVE: usize = 5;
 
 /// Passed to all pages, intended to store info that all would need access to
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
