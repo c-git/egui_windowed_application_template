@@ -1,4 +1,5 @@
-/// TODO: Review this page and use as an example
+/// TODO: Review this page and use as an example.
+/// It recreates the starting page in the original template
 use super::DisplayablePage;
 use crate::{DataShared, displayable_page_common};
 use egui::Ui;

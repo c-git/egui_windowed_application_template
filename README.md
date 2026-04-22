@@ -4,6 +4,9 @@
 [![Rust General](https://github.com/c-git/egui_windowed_application_template/actions/workflows/general.yml/badge.svg)](https://github.com/c-git/egui_windowed_application_template/actions/workflows/general.yml)
 
 This repo is derived from https://github.com/emilk/eframe_template/ so see the readme there for more info that may be relevant to you but has been removed here for brevity and focus.
+I tried to remove as much incidental complexity as possible but the best approach I've found to supporting multiple windows the the option to open more than one of the same window is inherently complex.
+I tried to extract as much of that as possible into a framework but some of it bleeds through.
+For getting started check out the locations marked with "TODO"
 
 ## Getting started
 

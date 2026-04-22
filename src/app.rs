@@ -57,9 +57,9 @@ impl eframe::App for TemplateApp {
     /// Called each time the UI needs repainting, which may be many times per
     /// second.
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`,
-        // `Window` or `Area`. For inspiration and more examples, go to https://emilk.github.io/egui
+        // For inspiration and more examples, go to https://emilk.github.io/egui
         // For a simpler example see https://github.com/emilk/eframe_template which this template expands on
+        // Create pages to add your widgets to. See the TODO comments across the code
 
         self.top_panel(ui);
         Self::bottom_panel(ui);
