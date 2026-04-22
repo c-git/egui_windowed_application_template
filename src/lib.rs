@@ -17,12 +17,12 @@ mod dev_dependencies {
 }
 
 mod app;
-mod data;
+mod data_shared;
 mod pages;
 mod shortcuts;
 pub mod tracing;
 pub use app::TemplateApp;
-pub use data::DataShared;
+pub use data_shared::DataShared;
 pub use pages::UiPage;
 
 /// Placeholder type for if your application needs permissions. I normally model
