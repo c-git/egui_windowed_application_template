@@ -40,5 +40,9 @@ impl DisplayablePage for UiAbout {
                 ui.label(VERSION);
                 ui.end_row();
             });
+        ui.add(egui::github_link_file!(
+            "https://github.com/c-git/egui_windowed_application_template/blob/main/",
+            "Source code."
+        ));
     }
 }
