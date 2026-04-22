@@ -24,7 +24,7 @@ impl DisplayablePage for UiAbout {
             .striped(true)
             .show(ui, |ui| {
                 // Shows a few of the environment variables set by cargo during compilation. For
-                // the ful list of variables cargo sets see
+                // the full list of variables cargo sets see
                 // https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
 
                 ui.label("Authors");
