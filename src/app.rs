@@ -59,8 +59,9 @@ impl eframe::App for TemplateApp {
         // For a simpler example see https://github.com/emilk/eframe_template which this template expands on
         // Create pages to add your widgets to. See the TODO comments across the code
 
+        self.data_shared.screen_lock_info.tick();
         self.top_panel(ui);
-        Self::bottom_panel(ui);
+        self.bottom_panel(ui);
         self.show_pages(ui);
 
         // Request repaint after 1 second
@@ -86,10 +87,11 @@ impl TemplateApp {
         });
     }
 
-    fn bottom_panel(ui: &mut egui::Ui) {
+    fn bottom_panel(&mut self, ui: &mut egui::Ui) {
         egui::Panel::bottom("bottom_panel").show_inside(ui, |ui| {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::BOTTOM), |ui| {
                 ui.label(Self::current_time());
+                self.ui_lock_info(ui);
                 egui::warn_if_debug_build(ui);
             });
         });
@@ -160,6 +162,29 @@ impl TemplateApp {
                 &mut self.active_pages,
             );
         });
+    }
+
+    fn ui_lock_info(&mut self, ui: &mut egui::Ui) {
+        let is_locked = self.data_shared.screen_lock_info.is_locked();
+        let locked = if is_locked { "LOCKED" } else { "UNLOCKED" };
+        let lock_at = self.data_shared.screen_lock_info.client_idle_timeout();
+        let idle_time = self
+            .data_shared
+            .screen_lock_info
+            .elapsed_time_since_user_activity();
+
+        ui.separator();
+        ui.label(format!("Idle time: {idle_time:}, Set to pretend lock at {lock_at} Seconds, Hypothetical lock status is: {locked}"))
+        .on_hover_text(
+            "Locking not implemented but just showing here for demonstration purposes",
+        );
+        if ui
+            .add_enabled(is_locked, egui::Button::new("Simulate Unlock"))
+            .clicked()
+        {
+            self.data_shared.screen_lock_info.unlock();
+        }
+        ui.separator();
     }
 }
 
