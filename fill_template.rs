@@ -41,7 +41,12 @@ pub fn main() -> anyhow::Result<()> {
         "{{ pwa_name }}",
     )?;
     do_switch(
-        &["src/app.rs", "src/lib.rs", "src/main.rs"],
+        &[
+            "src/app.rs",
+            "src/lib.rs",
+            "src/main.rs",
+            "src/pages/egui_settings.rs",
+        ],
         "TemplateApp",
         "{{ app_struct_identifier }}",
     )?;
