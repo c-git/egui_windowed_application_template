@@ -1,6 +1,8 @@
 use anyhow::Context as _;
 use tracing_subscriber::layer::SubscriberExt as _;
 
+use crate::consts::NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE;
+
 /// Returns a guard for the subscriber if successful
 ///
 /// # Errors
@@ -8,7 +10,11 @@ use tracing_subscriber::layer::SubscriberExt as _;
 /// setup the writer
 pub fn init_native() -> anyhow::Result<tracing_appender::non_blocking::WorkerGuard> {
     let (writer, path, guard) = setup_tracing_writer("egui-template-pwa")?;
-    let subscriber = get_subscriber("egui-template-pwa".into(), "zbus=warn,info", writer);
+    let subscriber = get_subscriber(
+        "egui-template-pwa".into(),
+        NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE,
+        writer,
+    );
 
     init_subscriber_with_path(&path, guard, subscriber)
 }

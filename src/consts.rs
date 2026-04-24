@@ -5,3 +5,4 @@ use wykies_time::Seconds;
 
 pub const CLIENT_IDLE_TIMEOUT: Seconds = Seconds::new(30);
 pub const CLIENT_TICKS_PER_SECOND_FOR_ACTIVE: usize = 5;
+pub const NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE: &str = "zbus=warn,info";
