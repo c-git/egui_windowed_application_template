@@ -66,7 +66,7 @@ pub fn init_wasm() -> anyhow::Result<()> {
 #[cfg(not(target_arch = "wasm32"))]
 /// Compose multiple layers into a `tracing`'s subscriber.
 ///
-/// For details acceptable Filter Directives see <https://docs.rs/tracing-subscriber/0.3.19/tracing_subscriber/filter/struct.EnvFilter.html#directives>
+/// For details of acceptable Filter Directives see <https://docs.rs/tracing-subscriber/0.3.19/tracing_subscriber/filter/struct.EnvFilter.html#directives>
 ///
 /// # Implementation Notes
 ///
@@ -81,13 +81,18 @@ where
     Sink: for<'a> tracing_subscriber::fmt::MakeWriter<'a> + Send + Sync + 'static,
     S: AsRef<str>,
 {
-    let env_filter = tracing_subscriber::EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(default_env_filter_directive));
+    let env_filter = env_filter(default_env_filter_directive);
     let formatting_layer = tracing_bunyan_formatter::BunyanFormattingLayer::new(name, sink);
     tracing_subscriber::Registry::default()
         .with(env_filter)
         .with(tracing_bunyan_formatter::JsonStorageLayer)
         .with(formatting_layer)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn env_filter<S: AsRef<str>>(default_env_filter_directive: S) -> tracing_subscriber::EnvFilter {
+    tracing_subscriber::EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(default_env_filter_directive))
 }
 
 #[cfg(not(target_arch = "wasm32"))]
