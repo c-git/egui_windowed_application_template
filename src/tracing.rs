@@ -13,10 +13,11 @@ pub use native_only::init_native;
 /// # Errors
 /// Fails if a global subscriber has already been set
 pub fn init_wasm() -> anyhow::Result<()> {
+    use tracing_subscriber::layer::SubscriberExt as _;
+
     // print pretty errors in wasm https://github.com/rustwasm/console_error_panic_hook
     // This is not needed for tracing_wasm to work, but it is a common tool for
     // getting proper error line numbers for panics.
-
     console_error_panic_hook::set_once();
 
     let config = tracing_wasm::WASMLayerConfigBuilder::new()
