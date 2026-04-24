@@ -6,7 +6,7 @@ pub use self::{about::UiAbout, egui_settings::UiEguiSettings, sample::UiSample};
 use crate::{DataShared, Permission};
 mod about;
 mod egui_settings;
-pub mod sample;
+mod sample;
 
 mod private {
     #[derive(Default)]
