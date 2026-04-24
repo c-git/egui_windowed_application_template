@@ -11,6 +11,20 @@ pub fn init_native() -> anyhow::Result<tracing_appender::non_blocking::WorkerGua
     let (writer, path, guard) = setup_tracing_writer("egui-template-pwa")?;
     let subscriber = get_subscriber("egui-template-pwa".into(), "zbus=warn,info", writer);
 
+    init_subscriber_with_path(&path, guard, subscriber)
+}
+
+/// Calls `init_subscriber` and if it succeeds it prints the path given and
+/// returns the guard. This function is needed because we first need to know if
+/// the init succeeded to know if we should print the path or not but
+/// `init_subscriber` shouldn't be the one to do it because it has no need for
+/// the path
+#[cfg(not(target_arch = "wasm32"))]
+fn init_subscriber_with_path(
+    path: &std::path::Path,
+    guard: tracing_appender::non_blocking::WorkerGuard,
+    subscriber: impl tracing::Subscriber + Sync + Send,
+) -> Result<tracing_appender::non_blocking::WorkerGuard, anyhow::Error> {
     #[expect(clippy::print_stdout)]
     match init_subscriber(subscriber) {
         Ok(()) => {
