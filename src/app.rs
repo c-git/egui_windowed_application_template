@@ -155,6 +155,7 @@ impl TemplateApp {
     }
 
     fn ui_menu_pages(&mut self, ui: &mut egui::Ui) {
+        // TODO: This is an example of how to add buttons to open a page
         ui.menu_button("Pages", |ui| {
             UiPage::ui_menu_page_btn::<pages::UiSample>(
                 ui,
