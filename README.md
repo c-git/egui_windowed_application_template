@@ -27,6 +27,11 @@ description = "Sets up a new egui windowed project"
 
 Then you can use the shorter command `cargo generate egui_windowed`.
 
+### Tracing
+
+On native logs are written to disk using the bunyan format and using [`tracing-wasm`](https://crates.io/crates/tracing-wasm) which uses the global JavaScript `console`.
+See [`tracing.rs`](https://github.com/c-git/egui_windowed_application_template/blob/main/src/tracing.rs) for more details.
+
 ### Testing locally
 
 `cargo run --release`
