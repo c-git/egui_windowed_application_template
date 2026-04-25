@@ -633,8 +633,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c673075a2e0e5f4a1dde27ce9dee1ea4558c7ffe648f576438a20ca1d2acc4b0"
 dependencies = [
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-link",
 ]
 
@@ -1042,8 +1044,7 @@ dependencies = [
 [[package]]
 name = "egui_tracing"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "085bbf5dd0cd689edf1d5d1161dd95b1dc487e2dd546363239bd5b233de65110"
+source = "git+https://github.com/c-git/egui_tracing?branch=simplify-use-for-wasm#47b812c02622d529807f98dc5ccfe805299dc0b5"
 dependencies = [
  "chrono",
  "egui",
@@ -3331,7 +3332,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rustix 1.1.4",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3659,7 +3660,7 @@ checksum = "f2f6fb2847f6742cd76af783a2a2c49e9375d0a111c7bef6f71cd9e738c72d6e"
 dependencies = [
  "memoffset",
  "tempfile",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

@@ -57,6 +57,7 @@ opt-level = 2
 # If you fork https://github.com/emilk/egui you can test with:
 # egui = { path = "../egui/crates/egui" }
 # eframe = { path = "../egui/crates/eframe" }
+egui_tracing = { git = "https://github.com/c-git/egui_tracing", branch = "simplify-use-for-wasm" }
 
 # ----------------------------------------------------------------------------------------
 # Lints:
