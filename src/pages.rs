@@ -49,10 +49,10 @@ impl egui_helpers::RemovableItem for UiPage {
 macro_rules! do_on_ui_page {
     ($on:ident, $page:ident, $body:tt) => {
         match $on {
-            UiPage::Sample($page) => $body,
-            UiPage::EguiSetting($page) => $body,
-            UiPage::About($page) => $body,
-            UiPage::LogViewer($page) => $body,
+            Self::Sample($page) => $body,
+            Self::EguiSetting($page) => $body,
+            Self::About($page) => $body,
+            Self::LogViewer($page) => $body,
         }
     };
 }
