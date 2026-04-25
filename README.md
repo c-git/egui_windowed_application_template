@@ -8,6 +8,8 @@ I tried to remove as much incidental complexity as possible but the best approac
 I tried to extract as much of that as possible into a framework but some of it bleeds through.
 For getting started check out the locations marked with "TODO"
 
+You can test the template app at <https://c-git.github.io/egui_windowed_application_template/>
+
 ## Getting started
 
 You first need to install `cargo generate` this can be done using the command `cargo install cargo-generate` or see the [docs](https://cargo-generate.github.io/cargo-generate/installation.html) for more info.
@@ -87,8 +89,6 @@ We use [Trunk](https://trunkrs.dev/) to build for web target.
 >     branches:
 >       - <branch name>
 > ```
-
-You can test the template app at <https://c-git.github.io/egui_windowed_application_template/>.
 
 ## License
 
