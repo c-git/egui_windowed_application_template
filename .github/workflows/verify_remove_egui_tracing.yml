@@ -1,0 +1,25 @@
+name: Verify remove egui-tracing script
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test_remove_egui_tracing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          components: clippy
+          toolchain: nightly # Possible issue here, needed for the single file rust script but may cause tests to fail
+      - name: Run script
+        run: ./remove_egui_tracing.rs
+      - name: Confirm No Errors After Remove
+        run: cargo clippy --all-features -- -D warnings
