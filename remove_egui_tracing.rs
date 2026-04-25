@@ -73,8 +73,7 @@ fn main() -> anyhow::Result<()> {
         &[
             (r#"mod log_viewer;\n"#, ""),
             (r#"LogViewer\(UiLogViewer\),"#, ""),
-            (r#"UiPage::LogViewer\(\$page\) => \$body,\n"#, ""),
-            (r#"(?s)Self::LogViewer\(.+?\).+?}\n"#, ""),
+            (r#"(?s)Self::LogViewer\(.+?\).+?[,}]\n"#, ""),
             (r#"log_viewer::UiLogViewer,"#, ""),
         ],
     )?;
