@@ -1,6 +1,6 @@
-# eframe template
+# {{ crate_display_name }}
 
-[![dependency status](https://deps.rs/repo/github/c-git/egui_windowed_application_template/status.svg)](https://deps.rs/repo/github/c-git/egui_windowed_application_template)
+[![dependency status](https://deps.rs/repo/github/c-git/egui_windowed_application_template/status.svg)](https://deps.rs/repo/github/{{ github_repository_owner_and_name }})
 [![Rust General](https://github.com/c-git/egui_windowed_application_template/actions/workflows/general.yml/badge.svg)](https://github.com/c-git/egui_windowed_application_template/actions/workflows/general.yml)
 
 This repo is derived from https://github.com/emilk/eframe_template/ so see the readme there for more info that may be relevant to you but has been removed here for brevity and focus.

@@ -18,7 +18,7 @@ mod data_shared;
 mod pages;
 mod shortcuts;
 pub mod tracing;
-pub use app::TemplateApp;
+pub use app::{{ app_struct_identifier }};
 pub use data_shared::DataShared;
 pub use pages::UiPage;
 

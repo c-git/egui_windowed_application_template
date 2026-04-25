@@ -1,4 +1,4 @@
-use crate::{DataShared, Permission, TemplateApp, pages::private};
+use crate::{DataShared, Permission, {{ app_struct_identifier }}, pages::private};
 use egui::Ui;
 use egui_pages::{DisplayablePage, displayable_page_common};
 use tracing::info;
@@ -16,7 +16,7 @@ impl UiEguiSettings {
         let current_ui_options = ui.options(|o| o.clone());
         self.prev_ui_options = Some(current_ui_options);
         let visuals = ui.global_style().visuals.clone();
-        ui.data_mut(|w| w.insert_persisted(egui::Id::new(TemplateApp::VISUALS_KEY), visuals));
+        ui.data_mut(|w| w.insert_persisted(egui::Id::new({{ app_struct_identifier }}::VISUALS_KEY), visuals));
         info!("Saved UI Visuals");
     }
 }
