@@ -47,11 +47,6 @@ pub fn main() -> anyhow::Result<()> {
     )?;
     do_switch(
         &["README.md"],
-        "c-git/egui_windowed_application_template/",
-        "{{ github_repository_owner_and_name }}/",
-    )?;
-    do_switch(
-        &["README.md"],
         "c-git/egui_windowed_application_template)",
         "{{ github_repository_owner_and_name }})",
     )?;
