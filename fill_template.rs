@@ -26,7 +26,11 @@ pub fn main() -> anyhow::Result<()> {
         "{{ crate_display_name }}",
     )?;
     do_switch(
-        &["assets/sw.js", "assets/manifest.json", "src/tracing.rs"],
+        &[
+            "assets/sw.js",
+            "assets/manifest.json",
+            "src/tracing/native_only.rs",
+        ],
         "egui-template-pwa",
         "{{ pwa_short_name }}",
     )?;
