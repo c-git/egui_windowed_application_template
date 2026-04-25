@@ -17,7 +17,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          components: clippy
+          components: rustfmt, clippy
           toolchain: nightly # Possible issue here, needed for the single file rust script but may cause tests to fail
       - name: Run script
         run: ./remove_egui_tracing.rs
