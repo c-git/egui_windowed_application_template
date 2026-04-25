@@ -113,11 +113,13 @@ impl TemplateApp {
 
     fn ui_menu_file(&mut self, ui: &mut egui::Ui) {
         ui.menu_button("File", |ui| {
+            // TODO: This is an example of how to add an individual page
             UiPage::ui_menu_page_btn::<pages::UiEguiSettings>(
                 ui,
                 &self.data_shared,
                 &mut self.active_pages,
-            );
+            )
+            .expect("type set at compile time so we know it's correct");
 
             // On the web the browser controls the zoom
             #[cfg(not(target_arch = "wasm32"))]
@@ -130,7 +132,8 @@ impl TemplateApp {
                     );
                 ui.separator();
             }
-            UiPage::ui_menu_page_btn::<UiAbout>(ui, &self.data_shared, &mut self.active_pages);
+            UiPage::ui_menu_page_btn::<UiAbout>(ui, &self.data_shared, &mut self.active_pages)
+                .expect("type set at compile time so we know it's correct");
 
             #[cfg(not(target_arch = "wasm32"))] // no File->Quit on web pages!
             if ui.button("Quit").clicked() {
@@ -160,18 +163,13 @@ impl TemplateApp {
     }
 
     fn ui_menu_pages(&mut self, ui: &mut egui::Ui) {
-        // TODO: This is an example of how to add buttons to open a page
+        // TODO: See the todo in the file menu for an example of how to do an individual
+        // page as you may not always want to show all pages in one menu. So in those
+        // case don't call `add_all_page_btns` and add the pages individual, organized
+        // as you see fit.
+
         ui.menu_button("Pages", |ui| {
-            UiPage::ui_menu_page_btn::<pages::UiSample>(
-                ui,
-                &self.data_shared,
-                &mut self.active_pages,
-            );
-            UiPage::ui_menu_page_btn::<pages::UiLogViewer>(
-                ui,
-                &self.data_shared,
-                &mut self.active_pages,
-            );
+            UiPage::add_all_page_btns(ui, &self.data_shared, &mut self.active_pages);
         });
     }
 
@@ -205,8 +203,12 @@ impl Default for TemplateApp {
         Self {
             data_shared: Default::default(),
             active_pages: vec![
-                UiPage::new_page_with_unique_number::<UiSample>(0),
-                UiPage::new_page_with_unique_number::<UiAbout>(0),
+                UiPage::type_to_instance::<UiSample>()
+                    .expect("type set at compile time so we know it's fine")
+                    .new_page_with_unique_number(0),
+                UiPage::type_to_instance::<UiAbout>()
+                    .expect("type set at compile time so we know it's fine")
+                    .new_page_with_unique_number(0),
             ],
             shortcuts: Default::default(),
             last_save_hash: Default::default(),

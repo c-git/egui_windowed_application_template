@@ -1,6 +1,5 @@
 use egui_pages::{DisplayablePage, PageContainer, show_page};
 use strum::{EnumIter, IntoEnumIterator as _};
-use tracing::error;
 
 pub use self::{
     about::UiAbout, egui_settings::UiEguiSettings, log_viewer::UiLogViewer, sample::UiSample,
@@ -60,33 +59,51 @@ macro_rules! do_on_ui_page {
 
 impl PageContainer<DataShared, Permission, private::Token> for UiPage {
     #[tracing::instrument(ret)]
-    fn new_page_with_unique_number<T: DisplayablePage<DataShared, Permission, private::Token>>(
-        page_unique_number: usize,
-    ) -> Self {
-        for page in Self::iter() {
-            if page.title_base() == T::title_base() {
-                return match page {
-                    Self::Sample(_) => {
-                        Self::Sample(UiSample::new_page(page_unique_number).and_open_page())
-                    }
-                    Self::EguiSetting(_) => Self::EguiSetting(
-                        UiEguiSettings::new_page(page_unique_number).and_open_page(),
-                    ),
-                    Self::About(_) => {
-                        Self::About(UiAbout::new_page(page_unique_number).and_open_page())
-                    }
-                    Self::LogViewer(_) => {
-                        Self::LogViewer(UiLogViewer::new_page(page_unique_number).and_open_page())
-                    }
-                };
+    fn new_page_with_unique_number(&self, page_unique_number: usize) -> Self {
+        match self {
+            Self::Sample(_) => Self::Sample(UiSample::new_page(page_unique_number).and_open_page()),
+            Self::EguiSetting(_) => {
+                Self::EguiSetting(UiEguiSettings::new_page(page_unique_number).and_open_page())
+            }
+            Self::About(_) => Self::About(UiAbout::new_page(page_unique_number).and_open_page()),
+            Self::LogViewer(_) => {
+                Self::LogViewer(UiLogViewer::new_page(page_unique_number).and_open_page())
             }
         }
-        let msg = format!(
-            "execution should never get here. All pages should be able to be found but {:?} not found",
+    }
+
+    fn type_to_instance<T: DisplayablePage<DataShared, Permission, private::Token>>()
+    -> anyhow::Result<Self> {
+        for page in Self::iter() {
+            if page.title_base() == T::title_base() {
+                return Ok(match page {
+                    Self::Sample(_) => Self::Sample(UiSample::default()),
+                    Self::EguiSetting(_) => Self::EguiSetting(UiEguiSettings::default()),
+                    Self::About(_) => Self::About(UiAbout::default()),
+                    Self::LogViewer(_) => Self::LogViewer(UiLogViewer::default()),
+                });
+            }
+        }
+        anyhow::bail!(
+            "invalid type passed. `UiPage` does not support: '{}'",
             T::title_base()
-        );
-        error!("{msg}");
-        unreachable!("{msg}");
+        )
+    }
+
+    fn ui_menu_page_btn<T: DisplayablePage<DataShared, Permission, private::Token>>(
+        ui: &mut egui::Ui,
+        data_shared: &DataShared,
+        active_pages: &mut Vec<Self>,
+    ) -> anyhow::Result<()>
+    where
+        DataShared: egui_pages::PermissionValidator<Permission>,
+    {
+        Self::type_to_instance::<T>()?.ui_menu_page_btn_inst(ui, data_shared, active_pages);
+        Ok(())
+    }
+
+    fn page_permissions(&self) -> &[Permission] {
+        do_on_ui_page!(self, page, { page.page_permissions_from_inst() })
     }
 
     fn display_page(&mut self, ui: &mut egui::Ui, data_shared: &mut DataShared) {
@@ -115,14 +132,6 @@ impl PageContainer<DataShared, Permission, private::Token> for UiPage {
 
     fn close_page(&mut self) {
         do_on_ui_page!(self, page, { page.close_page() });
-    }
-
-    fn ui_menu_page_btn<T: DisplayablePage<DataShared, Permission, private::Token>>(
-        ui: &mut egui::Ui,
-        data_shared: &DataShared,
-        active_pages: &mut Vec<Self>,
-    ) {
-        Self::internal_do_ui_menu_page_btn::<T>(ui, data_shared, active_pages);
     }
 }
 

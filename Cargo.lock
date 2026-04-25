@@ -949,7 +949,7 @@ dependencies = [
 [[package]]
 name = "egui-helpers"
 version = "0.2.0"
-source = "git+https://github.com/wykies/crates#d8fbb555f76f6b4a8747aa9d66c1a54cae6a4142"
+source = "git+https://github.com/wykies/crates#d1fbbb5128220d5a93a60b06d8d04e0230f395e5"
 dependencies = [
  "egui",
  "secrecy",
@@ -958,13 +958,15 @@ dependencies = [
 
 [[package]]
 name = "egui-pages"
-version = "0.1.0"
-source = "git+https://github.com/wykies/crates#d8fbb555f76f6b4a8747aa9d66c1a54cae6a4142"
+version = "0.2.0"
+source = "git+https://github.com/wykies/crates#d1fbbb5128220d5a93a60b06d8d04e0230f395e5"
 dependencies = [
+ "anyhow",
  "egui",
  "egui-helpers",
  "ron",
  "serde",
+ "strum",
  "tracing",
 ]
 
@@ -4616,7 +4618,7 @@ checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
 [[package]]
 name = "wykies-time"
 version = "0.1.0"
-source = "git+https://github.com/wykies/crates#d8fbb555f76f6b4a8747aa9d66c1a54cae6a4142"
+source = "git+https://github.com/wykies/crates#d1fbbb5128220d5a93a60b06d8d04e0230f395e5"
 dependencies = [
  "chrono",
  "serde",
