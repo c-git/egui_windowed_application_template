@@ -5,7 +5,7 @@
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result<()> {
     #[expect(clippy::print_stderr)]
-    let _guard = match eframe_template::tracing::init_native() {
+    let (_guard, egui_tracing_collector) = match eframe_template::tracing::init_native() {
         Ok(guard) => guard,
         Err(err_msg) => {
             eprintln!("Failed to start tracing: {err_msg:?}");
@@ -28,7 +28,12 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "eframe template",
         native_options,
-        Box::new(|cc| Ok(Box::new(eframe_template::TemplateApp::new(cc)))),
+        Box::new(|cc| {
+            Ok(Box::new(eframe_template::TemplateApp::new(
+                cc,
+                egui_tracing_collector,
+            )))
+        }),
     )
 }
 
@@ -36,9 +41,10 @@ fn main() -> eframe::Result<()> {
 #[cfg(target_arch = "wasm32")]
 fn main() {
     use eframe::wasm_bindgen::JsCast as _;
-    if let Err(err_msg) = eframe_template::tracing::init_wasm() {
-        panic!("Failed to start tracing: {err_msg:?}");
-    }
+    let egui_tracing_collector = match eframe_template::tracing::init_wasm() {
+        Ok(collector) => collector,
+        Err(err_msg) => panic!("Failed to start tracing: {err_msg:?}"),
+    };
 
     let web_options = eframe::WebOptions::default();
 
@@ -58,7 +64,12 @@ fn main() {
             .start(
                 canvas,
                 web_options,
-                Box::new(|cc| Ok(Box::new(eframe_template::TemplateApp::new(cc)))),
+                Box::new(|cc| {
+                    Ok(Box::new(eframe_template::TemplateApp::new(
+                        cc,
+                        egui_tracing_collector,
+                    )))
+                }),
             )
             .await;
 

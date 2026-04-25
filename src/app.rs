@@ -26,17 +26,22 @@ impl TemplateApp {
     pub const VISUALS_KEY: &str = "visuals";
 
     /// Called once before the first frame.
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(
+        cc: &eframe::CreationContext<'_>,
+        egui_tracing_collector: egui_tracing::EventCollector,
+    ) -> Self {
         // This is also where you can customize the look and feel of egui using
         // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
 
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
-        if let Some(storage) = cc.storage {
+        let mut result = if let Some(storage) = cc.storage {
             eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default()
         } else {
-            Default::default()
-        }
+            Self::default()
+        };
+        result.data_shared.egui_tracing_collector = egui_tracing_collector; // Must replace the default that is not connected
+        result
     }
 }
 
@@ -158,6 +163,11 @@ impl TemplateApp {
         // TODO: This is an example of how to add buttons to open a page
         ui.menu_button("Pages", |ui| {
             UiPage::ui_menu_page_btn::<pages::UiSample>(
+                ui,
+                &self.data_shared,
+                &mut self.active_pages,
+            );
+            UiPage::ui_menu_page_btn::<pages::UiLogViewer>(
                 ui,
                 &self.data_shared,
                 &mut self.active_pages,

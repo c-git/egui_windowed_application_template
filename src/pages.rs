@@ -2,10 +2,13 @@ use egui_pages::{DisplayablePage, PageContainer, show_page};
 use strum::{EnumIter, IntoEnumIterator as _};
 use tracing::error;
 
-pub use self::{about::UiAbout, egui_settings::UiEguiSettings, sample::UiSample};
+pub use self::{
+    about::UiAbout, egui_settings::UiEguiSettings, log_viewer::UiLogViewer, sample::UiSample,
+};
 use crate::{DataShared, Permission};
 mod about;
 mod egui_settings;
+mod log_viewer;
 mod sample;
 
 mod private {
@@ -23,6 +26,7 @@ pub enum UiPage {
     Sample(UiSample),
     EguiSetting(UiEguiSettings),
     About(UiAbout),
+    LogViewer(UiLogViewer),
 }
 
 impl egui_helpers::RemovableItem for UiPage {
@@ -49,6 +53,7 @@ macro_rules! do_on_ui_page {
             UiPage::Sample($page) => $body,
             UiPage::EguiSetting($page) => $body,
             UiPage::About($page) => $body,
+            UiPage::LogViewer($page) => $body,
         }
     };
 }
@@ -69,6 +74,9 @@ impl PageContainer<DataShared, Permission, private::Token> for UiPage {
                     ),
                     Self::About(_) => {
                         Self::About(UiAbout::new_page(page_unique_number).and_open_page())
+                    }
+                    Self::LogViewer(_) => {
+                        Self::LogViewer(UiLogViewer::new_page(page_unique_number).and_open_page())
                     }
                 };
             }

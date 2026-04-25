@@ -8,15 +8,21 @@ use crate::consts::NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE;
 /// # Errors
 /// May fail for various reasons like invalid path to save to or not able to
 /// setup the writer
-pub fn init_native() -> anyhow::Result<tracing_appender::non_blocking::WorkerGuard> {
+pub fn init_native() -> anyhow::Result<(
+    tracing_appender::non_blocking::WorkerGuard,
+    egui_tracing::EventCollector,
+)> {
+    let egui_tracing_event_collector = super::get_egui_tracing_event_collector();
     let (writer, path, guard) = setup_tracing_writer("egui-template-pwa")?;
     let subscriber = get_subscriber(
         "egui-template-pwa".into(),
         NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE,
         writer,
+        egui_tracing_event_collector.clone(),
     );
 
-    init_subscriber_with_path(&path, guard, subscriber)
+    let guard = init_subscriber_with_path(&path, guard, subscriber)?;
+    Ok((guard, egui_tracing_event_collector))
 }
 
 /// Calls `init_subscriber` and if it succeeds it prints the path given and
@@ -58,6 +64,7 @@ fn get_subscriber<Sink, S>(
     name: String,
     default_env_filter_directive: S,
     sink: Sink,
+    egui_tracing_event_collector: egui_tracing::EventCollector,
 ) -> impl tracing::Subscriber + Sync + Send
 where
     Sink: for<'a> tracing_subscriber::fmt::MakeWriter<'a> + Send + Sync + 'static,
@@ -69,6 +76,7 @@ where
         .with(env_filter)
         .with(tracing_bunyan_formatter::JsonStorageLayer)
         .with(formatting_layer)
+        .with(egui_tracing_event_collector)
 }
 
 fn env_filter<S: AsRef<str>>(default_env_filter_directive: S) -> tracing_subscriber::EnvFilter {

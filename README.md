@@ -32,6 +32,16 @@ Then you can use the shorter command `cargo generate egui_windowed`.
 On native logs are written to disk using the bunyan format and using [`tracing-wasm`](https://crates.io/crates/tracing-wasm) which uses the global JavaScript `console`.
 See [`tracing.rs`](https://github.com/c-git/egui_windowed_application_template/blob/main/src/tracing.rs) for more details.
 
+I've also added [`egui_tracing`](https://github.com/grievouz/egui_tracing) to the initial template but because it is not without overhead `remove_egui_tracing.rs` has been provided to remove it if you do not use it in your built application.
+It uses [rust's single file script](https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#script) which is still unstable so nightly will be needed to run the following command.
+Decided to use a script to remove it instead of providing an optional way to pass in additional subscribers because I found it very challenging to do so as I seemed to be heading towards needing boxing to be able to do it and didn't want to pay the additional cost on the tracing.
+The script hopefully will work if you've already modified the template but is designed to work with the template in t's original state.
+If you need to do it manually simply remove `egui_tracing` as a dependency and follow the compiler errors.
+
+```sh
+./remove_egui_tracing.rs
+```
+
 ### Testing locally
 
 `cargo run --release`

@@ -15,6 +15,8 @@ pub struct DataShared {
     /// easy as possible to remove.
     #[serde(skip)]
     pub screen_lock_info: ScreenLockInfo,
+    #[serde(skip)]
+    pub egui_tracing_collector: egui_tracing::EventCollector,
 }
 
 impl PermissionValidator<Permission> for DataShared {
@@ -32,6 +34,7 @@ impl Default for DataShared {
                 CLIENT_IDLE_TIMEOUT,
                 CLIENT_TICKS_PER_SECOND_FOR_ACTIVE,
             ),
+            egui_tracing_collector: Default::default(),
         }
     }
 }
