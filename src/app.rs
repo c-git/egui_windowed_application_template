@@ -32,6 +32,15 @@ impl TemplateApp {
     ) -> Self {
         // This is also where you can customize the look and feel of egui using
         // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
+        if let Some(visuals) = cc
+            .egui_ctx
+            .data_mut(|r| r.get_persisted::<egui::Visuals>(egui::Id::new(Self::VISUALS_KEY)))
+        {
+            info!("Found saved Visuals. Loading...");
+            cc.egui_ctx.set_visuals(visuals);
+        } else {
+            info!("Unable to load Visuals, no saved version found");
+        }
 
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
