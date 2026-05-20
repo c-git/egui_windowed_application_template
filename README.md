@@ -27,7 +27,7 @@ branch = "cargo-gen"
 description = "Sets up a new egui windowed project"
 ```
 
-Then you can use the shorter command `cargo generate egui_windowed`.
+Then you can use the shorter command `cargo generate egui_windowed`. Creates the project in a new folder in the current folder.
 
 ### Tracing
 
