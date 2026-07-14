@@ -54,6 +54,16 @@ pub fn main() -> anyhow::Result<()> {
         "c-git/egui_windowed_application_template)",
         "{{ github_repository_owner_and_name }})",
     )?;
+    do_switch(
+        &["README.md"],
+        "c-git/egui_windowed_application_template/status",
+        "{{ github_repository_owner_and_name }})/status",
+    )?;
+    do_switch(
+        &["README.md"],
+        "c-git/egui_windowed_application_template/actions",
+        "{{ github_repository_owner_and_name }})/actions",
+    )?;
     println!("Completed");
     Ok(())
 }
