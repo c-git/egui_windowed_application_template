@@ -5,7 +5,7 @@ use crate::{
 };
 use egui_pages::PageContainer as _;
 use std::hash::{Hash as _, Hasher as _};
-use tracing::{debug, error, info};
+use tracing::{debug, error, info, warn};
 use wykies_time::Timestamp;
 
 const VERSION_STR: &str = concat!("ver: ", env!("CARGO_PKG_VERSION"));
@@ -45,8 +45,15 @@ impl TemplateApp {
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
         let mut result = if let Some(storage) = cc.storage {
-            eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default()
+            if let Some(x) = eframe::get_value(storage, eframe::APP_KEY) {
+                info!("Previous App State Loaded");
+                x
+            } else {
+                warn!("Previous App State Not Found in Storage");
+                Default::default()
+            }
         } else {
+            warn!("Storage Not Found unable to load Previous App State");
             Self::default()
         };
         result.data_shared.egui_tracing_collector = egui_tracing_collector; // Must replace the default that is not connected
