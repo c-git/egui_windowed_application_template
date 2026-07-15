@@ -16,7 +16,7 @@ mod private {
     pub struct Token;
 }
 
-// TODO: Add an enum variant for pages you want to add. The compiler will guid
+// TODO: Add an enum variant for pages you want to add. The compiler will guide
 // you to where you need to update, just follow the pattern in those areas.
 
 /// Records the types of possible pages
