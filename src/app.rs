@@ -85,7 +85,7 @@ impl eframe::App for TemplateApp {
 
 impl TemplateApp {
     fn top_panel(&mut self, ui: &mut egui::Ui) {
-        egui::Panel::top("top_panel").show_inside(ui, |ui| {
+        egui::Panel::top("top_panel").show(ui, |ui| {
             // The top panel is often a good place for a menu bar:
 
             egui::MenuBar::new().ui(ui, |ui| {
@@ -102,7 +102,7 @@ impl TemplateApp {
     }
 
     fn bottom_panel(&mut self, ui: &mut egui::Ui) {
-        egui::Panel::bottom("bottom_panel").show_inside(ui, |ui| {
+        egui::Panel::bottom("bottom_panel").show(ui, |ui| {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::BOTTOM), |ui| {
                 ui.label(Self::current_time());
                 self.ui_lock_info(ui);
