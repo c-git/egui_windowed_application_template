@@ -14,7 +14,8 @@ pub struct DataShared {
     /// However, since it's only here for demonstration purposes I've made it as
     /// easy as possible to remove.
     #[serde(skip)]
-    pub screen_lock_info: ScreenLockInfo,
+    pub screen_lock_info: ScreenLockInfo, /* TODO: Remove this field if you do not want locking
+                                           * and just follow the compiler errors */
     #[serde(skip)]
     pub egui_tracing_collector: egui_tracing::EventCollector,
 }
