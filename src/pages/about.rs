@@ -18,7 +18,7 @@ impl DisplayablePage<DataShared, Permission, private::Token> for UiAbout {
     displayable_page_common!("About", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, _data_shared: &mut DataShared) {
-        egui::Grid::new(self.unique_prefix_for_id(&self.unique_prefix_for_id("grid")))
+        egui::Grid::new(self.unique_prefix_for_id("grid"))
             .num_columns(2)
             .spacing([40.0, 4.0])
             .striped(true)
