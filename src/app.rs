@@ -45,12 +45,22 @@ impl TemplateApp {
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
         let mut result = if let Some(storage) = cc.storage {
-            if let Some(x) = eframe::get_value(storage, eframe::APP_KEY) {
-                info!("Previous App State Loaded");
-                x
+            if let Some(value) = storage.get_string(eframe::APP_KEY) {
+                match ron::from_str(&value) {
+                    Ok(x) => {
+                        info!("Previous App State Loaded");
+                        x
+                    }
+                    Err(err) => {
+                        // This happens on when we break the format, eg adding
+                        // non-optional fields
+                        warn!("Failed to load App State because: failed to decode RON: {err}");
+                        Self::default()
+                    }
+                }
             } else {
                 warn!("Previous App State Not Found in Storage");
-                Default::default()
+                Self::default()
             }
         } else {
             warn!("Storage Not Found unable to load Previous App State");
