@@ -34,13 +34,13 @@ impl DisplayablePage<DataShared, Permission, private::Token> for UiSample {
     displayable_page_common!("UI Sample", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, _data_shared: &mut DataShared) {
-        // You are fine to use panels in here if you want but as the ui is already in
-        // the context of a window it isn't always needed. The panel has only been left
-        // here as an example.
+        // You are fine to use panels in here if you want but as the ui is
+        // already in the context of a window it isn't always needed.
+        // The panel has only been left here as an example.
         //
         // If you use a central panel it takes up the region left after adding
-        // TopPanel's and SidePanel's. Which also means that it needs to be created
-        // after them in the code.
+        // TopPanel's and SidePanel's. Which also means that it needs to be
+        // created after them in the code.
         egui::CentralPanel::default().show(ui, |ui| {
             ui.horizontal(|ui| {
                 ui.label("Write something: ");

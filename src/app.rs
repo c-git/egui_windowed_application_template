@@ -171,7 +171,7 @@ impl TemplateApp {
                 );
             }
             ui.separator();
-            
+
             // TODO: Remove the example modal prompt buttons
             if ui.button("Show Example Confirmation Toast").clicked() {
                 self.data_shared.toast_add_queue.confirm("Confirmation Message");
@@ -186,7 +186,7 @@ impl TemplateApp {
                 self.data_shared.toast_add_queue.error(&anyhow::anyhow!("Error Message"));
             }
             ui.separator();
-            
+
 
             // On the web the browser controls the zoom
             #[cfg(not(target_arch = "wasm32"))]
