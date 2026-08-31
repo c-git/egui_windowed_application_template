@@ -17,6 +17,7 @@ mod consts;
 mod data_shared;
 mod pages;
 mod shortcuts;
+mod toast_add_queue;
 pub mod tracing;
 pub use app::TemplateApp;
 pub use data_shared::DataShared;

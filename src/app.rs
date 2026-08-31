@@ -12,7 +12,7 @@ use wykies_time::Timestamp;
 const VERSION_STR: &str = concat!("ver: ", env!("CARGO_PKG_VERSION"));
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TemplateApp {
     #[serde(skip)]
@@ -97,6 +97,9 @@ impl eframe::App for TemplateApp {
         self.top_panel(ui);
         self.bottom_panel(ui);
         self.show_pages(ui);
+
+        self.data_shared.dequeue_toasts();
+        self.data_shared.toasts.show(ui);
 
         // Request repaint after 1 second
         ui.request_repaint_after(std::time::Duration::from_secs(1));

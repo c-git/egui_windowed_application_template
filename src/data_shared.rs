@@ -2,6 +2,7 @@ use crate::{
     Permission,
     consts::{CLIENT_IDLE_TIMEOUT, CLIENT_TICKS_PER_SECOND_FOR_ACTIVE},
     data_shared::modal::ModalInfo,
+    toast_add_queue::ToastAddQueue,
 };
 use egui_helpers::ScreenLockInfo;
 use egui_pages::PermissionValidator;
@@ -9,7 +10,7 @@ use egui_pages::PermissionValidator;
 pub(crate) mod modal;
 
 /// Passed to all pages, intended to store info that all would need access to
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 #[serde(default)]
 pub struct DataShared {
     /// For the sake of simplicity I've not wrapped the API of this field but
@@ -24,6 +25,10 @@ pub struct DataShared {
 
     #[serde(skip)]
     modal_msg: Option<ModalInfo>,
+    #[serde(skip)]
+    pub(crate) toasts: egui_toast::Toasts,
+    #[serde(skip)]
+    pub(crate) toast_add_queue: ToastAddQueue,
 }
 
 impl PermissionValidator<Permission> for DataShared {
@@ -43,6 +48,10 @@ impl Default for DataShared {
             ),
             egui_tracing_collector: Default::default(),
             modal_msg: Default::default(),
+            toast_add_queue: Default::default(),
+            toasts: egui_toast::Toasts::new()
+                .anchor(egui::Align2::RIGHT_BOTTOM, (-10.0, -30.0)) // offset from the bottom right
+                .direction(egui::Direction::BottomUp), // Stacks notifications upward
         }
     }
 }
@@ -107,5 +116,11 @@ impl DataShared {
 
     pub(crate) fn set_modal(&mut self, msg: ModalInfo) {
         self.modal_msg = Some(msg);
+    }
+
+    /// Needs to be called once per frame to check if there are toast messages
+    /// to add
+    pub(crate) fn dequeue_toasts(&mut self) {
+        self.toast_add_queue.dequeue_toasts(&mut self.toasts);
     }
 }
