@@ -38,8 +38,8 @@ fn main() -> anyhow::Result<()> {
                 "if let Some(storage)",
             ),
             (
-                r#"(?s)Self::default().+result\.data.+result"#,
-                "Self::default()}",
+                r#"(?ms)\};\s*result.data_shared.egui_tracing_collector = egui_tracing_collector.*result"#,
+                "}",
             ),
             (
                 r#"(?s)UiPage::ui_menu_page_btn::<pages::UiLogViewer>.+?\);"#,
