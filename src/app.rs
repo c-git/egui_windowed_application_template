@@ -1,5 +1,6 @@
 use crate::{
     DataShared, UiPage,
+    data_shared::modal::{ModalInfo, ModalKind},
     pages::{self, UiAbout, UiSample},
     shortcuts::Shortcuts,
 };
@@ -92,6 +93,7 @@ impl eframe::App for TemplateApp {
         // code
 
         self.data_shared.screen_lock_info.tick();
+        self.data_shared.check_modal(ui);
         self.top_panel(ui);
         self.bottom_panel(ui);
         self.show_pages(ui);
@@ -148,10 +150,28 @@ impl TemplateApp {
             )
             .expect("type set at compile time so we know it's correct");
 
+            // TODO: Remove the example modal prompt buttons
+            ui.separator();
+            if ui.button("Show Example Info Modal").clicked() {
+                self.data_shared.set_modal(
+                    ModalInfo::new("Information Message").set_kind(ModalKind::Info).set_show_copy_msg_button(false),
+                );
+            }
+            if ui.button("Show Example Warning Modal").clicked() {
+                self.data_shared.set_modal(
+                    ModalInfo::new("Warning Message Goes Here").set_kind(ModalKind::Warning),
+                );
+            }
+            if ui.button("Show Example Error Modal").clicked() {
+                self.data_shared.set_modal(
+                    ModalInfo::new("Error Message Goes Here\n\nAnd can be multiple lines like a the debug version\nLeft aligned for readability").set_kind(ModalKind::Error).set_width(400.),
+                );
+            }
+            ui.separator();
+
             // On the web the browser controls the zoom
             #[cfg(not(target_arch = "wasm32"))]
             {
-                ui.separator();
                 egui::gui_zoom::zoom_menu_buttons(ui);
                 ui.weak(format!("Current zoom: {:.0}%", 100.0 * ui.zoom_factor()))
                     .on_hover_text(
