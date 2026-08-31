@@ -171,6 +171,22 @@ impl TemplateApp {
                 );
             }
             ui.separator();
+            
+            // TODO: Remove the example modal prompt buttons
+            if ui.button("Show Example Confirmation Toast").clicked() {
+                self.data_shared.toast_add_queue.confirm("Confirmation Message");
+            }
+            if ui.button("Show Example Copy Confirmation Toast").clicked() {
+                self.data_shared.toast_add_queue.confirm_copy("[THING NAMED]");
+            }
+            if ui.button("Show Example Info Toast").clicked() {
+                self.data_shared.toast_add_queue.info("Info Toast");
+            }
+            if ui.button("Show Example Error Toast").clicked() {
+                self.data_shared.toast_add_queue.error(&anyhow::anyhow!("Error Message"));
+            }
+            ui.separator();
+            
 
             // On the web the browser controls the zoom
             #[cfg(not(target_arch = "wasm32"))]

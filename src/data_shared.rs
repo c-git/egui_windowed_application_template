@@ -101,8 +101,7 @@ impl DataShared {
                     if msg.show_copy_msg_button && ui.button("Copy message to clipboard").clicked()
                     {
                         ui.copy_text(msg.text.clone());
-                        // TODO 1: Enable after we add toast support
-                        // self.toast_add_queue.confirm_copy("Message");
+                        self.toast_add_queue.confirm_copy("Message");
                         ui.close();
                     }
                 },
