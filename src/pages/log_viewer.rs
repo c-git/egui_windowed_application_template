@@ -16,7 +16,7 @@ impl DisplayablePage<DataShared, Permission, private::Token> for UiLogViewer {
     displayable_page_common!("Log Viewer", &[], private::Token);
 
     fn show(&mut self, ui: &mut Ui, data_shared: &mut DataShared) {
-        // TODO: Remove sample top panel for testing tracing
+        // TODO: Remove sample top panel, only meant for testing tracing
         Panel::top(self.unique_prefix_for_id("top")).show(ui, |ui| {
             ui.horizontal(|ui| {
                 ui.label("Message");
