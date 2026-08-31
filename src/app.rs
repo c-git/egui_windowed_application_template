@@ -14,7 +14,7 @@ const VERSION_STR: &str = concat!("ver: ", env!("CARGO_PKG_VERSION"));
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
-pub struct TemplateApp {
+pub struct {{ app_struct_identifier }} {
     #[serde(skip)]
     data_shared: DataShared,
     active_pages: Vec<UiPage>,
@@ -23,7 +23,7 @@ pub struct TemplateApp {
     last_save_hash: Option<u64>,
 }
 
-impl TemplateApp {
+impl {{ app_struct_identifier }} {
     pub const VISUALS_KEY: &str = "visuals";
 
     /// Called once before the first frame.
@@ -72,7 +72,7 @@ impl TemplateApp {
     }
 }
 
-impl eframe::App for TemplateApp {
+impl eframe::App for {{ app_struct_identifier }} {
     /// Called by the framework to save state before shutdown and periodically
     /// as on web there is no shutdown notification
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
@@ -106,7 +106,7 @@ impl eframe::App for TemplateApp {
     }
 }
 
-impl TemplateApp {
+impl {{ app_struct_identifier }} {
     fn top_panel(&mut self, ui: &mut egui::Ui) {
         egui::Panel::top("top_panel").show(ui, |ui| {
             // The top panel is often a good place for a menu bar:
@@ -263,7 +263,7 @@ impl TemplateApp {
     }
 }
 
-impl Default for TemplateApp {
+impl Default for {{ app_struct_identifier }} {
     fn default() -> Self {
         // Preload `active_pages` with a few pages for first open
         Self {

@@ -13,9 +13,9 @@ pub fn init_native() -> anyhow::Result<(
     egui_tracing::EventCollector,
 )> {
     let egui_tracing_event_collector = super::get_egui_tracing_event_collector();
-    let (writer, path, guard) = setup_tracing_writer("egui-template-pwa")?;
+    let (writer, path, guard) = setup_tracing_writer("{{ pwa_short_name }}")?;
     let subscriber = get_subscriber(
-        "egui-template-pwa".into(),
+        "{{ pwa_short_name }}".into(),
         NATIVE_DEFAULT_ENV_FILTER_DIRECTIVE,
         writer,
         egui_tracing_event_collector.clone(),

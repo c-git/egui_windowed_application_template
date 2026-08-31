@@ -19,7 +19,7 @@ mod pages;
 mod shortcuts;
 mod toast_add_queue;
 pub mod tracing;
-pub use app::TemplateApp;
+pub use app::{{ app_struct_identifier }};
 pub use data_shared::DataShared;
 pub use pages::UiPage;
 
