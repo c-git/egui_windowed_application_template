@@ -58,7 +58,7 @@ macro_rules! do_on_ui_page {
 }
 
 impl PageContainer<DataShared, Permission, private::Token> for UiPage {
-    #[tracing::instrument(ret)]
+    #[tracing::instrument]
     fn new_page_with_unique_number(&self, page_unique_number: usize) -> Self {
         match self {
             Self::Sample(_) => Self::Sample(UiSample::new_page(page_unique_number).and_open_page()),
