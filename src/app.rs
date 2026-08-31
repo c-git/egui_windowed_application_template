@@ -78,7 +78,8 @@ impl eframe::App for TemplateApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         // For inspiration and more examples, go to https://emilk.github.io/egui
         // For a simpler example see https://github.com/emilk/eframe_template which this template expands on
-        // Create pages to add your widgets to. See the TODO comments across the code
+        // Create pages to add your widgets to. See the TODO comments across the
+        // code
 
         self.data_shared.screen_lock_info.tick();
         self.top_panel(ui);
@@ -179,10 +180,10 @@ impl TemplateApp {
     }
 
     fn ui_menu_pages(&mut self, ui: &mut egui::Ui) {
-        // TODO: See the todo in the file menu for an example of how to do an individual
-        // page as you may not always want to show all pages in one menu. So in those
-        // case don't call `add_all_page_btns` and add the pages individual, organized
-        // as you see fit.
+        // TODO: See the todo in the file menu for an example of how to do an
+        // individual page as you may not always want to show all pages
+        // in one menu. So in those case don't call `add_all_page_btns`
+        // and add the pages individual, organized as you see fit.
 
         ui.menu_button("Pages", |ui| {
             UiPage::add_all_page_btns(ui, &self.data_shared, &mut self.active_pages);
