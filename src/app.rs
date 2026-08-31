@@ -124,7 +124,7 @@ impl TemplateApp {
     }
 
     fn current_time() -> String {
-        Timestamp::now().display_as_utc_datetime_long()
+        Timestamp::now().display_as_datetime_long(jiff::tz::TimeZone::system())
     }
 
     fn ui_menu_file(&mut self, ui: &mut egui::Ui) {

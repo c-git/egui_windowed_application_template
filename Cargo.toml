@@ -13,17 +13,18 @@ targets = ["x86_64-unknown-linux-gnu", "wasm32-unknown-unknown"]
 
 [dependencies]
 anyhow = "1.0.103"
-eframe = { version = "0.35.0", features = ["persistence"] }
-egui = "0.35.0"
-egui-helpers = { git = "https://github.com/wykies/crates", version = "0.4.0" }
-egui-pages = { git = "https://github.com/wykies/crates", version = "0.3.0" }
+eframe = { version = "0.36", features = ["persistence"] }
+egui = "0.36"
+egui-helpers = { git = "https://github.com/wykies/crates", version = "0.5" }
+egui-pages = { git = "https://github.com/wykies/crates", version = "0.4" }
 egui_tracing = "0.3.0"
+jiff = "0.2.35"
 ron = "0.12.1"
 serde = { version = "1.0.219", features = ["derive"] } # You only need serde if you want app persistence:
 strum = { version = "0.28.0", features = ["derive"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.22" }
-wykies-time = { git = "https://github.com/wykies/crates", version = "0.1.0" }
+wykies-time = { git = "https://github.com/wykies/crates", version = "0.2" }
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
